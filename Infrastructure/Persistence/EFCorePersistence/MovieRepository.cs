@@ -1,7 +1,8 @@
-﻿using Application.Movies;
-using Domain.Common;
+﻿using Application.Common;
+using Application.Movies;
 using Domain.Movies;
 using Domain.Movies.Queries;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCorePersistence
@@ -15,9 +16,29 @@ namespace EFCorePersistence
             return movie;
         }
 
-        public async Task<IList<Movie>> GetAll(MovieFilter? filter = null, SortingPaging? sortingPaging = null)
+        public async Task<Page<Movie>> GetAll(MovieFilter? filter = null, SortingPaging? sortingPaging = null)
         {
-            var res = await Movies.Where(a => a.Id == 1).ToArrayAsync();
+            var pred = PredicateBuilder.New<Movie>(true);
+
+            if (filter != null)
+            {
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    pred = pred.And(a => a.Name.Contains(filter.Name));
+                }
+                if (filter.Genre != null)
+                {
+                    var genreId = (int)filter.Genre.GetValueOrDefault();
+                    pred = pred.And(a => a.Genre.Id == genreId);
+                }
+            }
+            var sortPage = sortingPaging ?? new SortingPaging("Id", false, 1, 10);
+            var sortBy = sortPage.SortBy ?? "Id";
+            var res = await Movies.AsExpandable()
+                                  .Where(pred)
+                                  .ToPagedAsync(sortPage.PageNumber, sortPage.PageSize, sortBy, sortPage.SortAsc);
+
+
             return res;
         }
 

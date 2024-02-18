@@ -2,8 +2,8 @@
 {
     public class MovieFilter
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public MovieGenreEnum Genre { get; set; }
+        public MovieGenreEnum? Genre { get; set; }
     }
 }

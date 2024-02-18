@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Application.Common;
 using Domain.Users;
 using Domain.Users.Queries;
 

@@ -2,7 +2,7 @@
 using Application.Users.Commands.RemoveMovie;
 using Application.Users.Dtos;
 using Application.Users.Queries.GetUserMovies;
-using Domain.Common;
+using Application.Common;
 using Domain.Users.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,78 +29,7 @@ namespace MoviesCollectionWebApi.Controllers
         }
 
 
-        #region authentication
-        //[HttpPost]
-        //[Route("register")]
-        //public async Task<IActionResult> Register(RegisterUserDto request)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var result = await _userManager.CreateAsync(
-        //        new ApplicationUser {UserName= request.Username,Email= request.Email/*, request.Role*/ },
-        //        request.Password!
-        //    );
-
-        //    if (result.Succeeded)
-        //    {
-        //        request.Password = string.Empty;
-        //        return CreatedAtAction(nameof(Register), new { email = request.Email, role = request.Role }, request);
-        //    }
-
-        //    foreach (var error in result.Errors)
-        //    {
-        //        ModelState.AddModelError(error.Code, error.Description);
-        //    }
-
-        //    return BadRequest(ModelState);
-        //}
-
-
-        //[HttpPost]
-        //[Route("login")]
-        //public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var managedUser = await _userManager.FindByEmailAsync(request.Email!);
-
-        //    if (managedUser == null)
-        //    {
-        //        return BadRequest("Bad credentials");
-        //    }
-
-        //    var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password!);
-
-        //    if (!isPasswordValid)
-        //    {
-        //        return BadRequest("Bad credentials");
-        //    }
-
-        //    var userInDb = _context.Users.FirstOrDefault(u => u.Email == request.Email);
-
-        //    if (userInDb is null)
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    var accessToken = _tokenService.CreateToken(userInDb);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new AuthResponse
-        //    {
-        //        Username = userInDb.UserName,
-        //        Email = userInDb.Email,
-        //        Token = accessToken,
-        //    });
-        //}
-
-        #endregion
+       
 
 
 

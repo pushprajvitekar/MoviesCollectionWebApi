@@ -15,8 +15,12 @@ namespace Application.Movies.Queries.GetMovies
         public async Task<IEnumerable<MovieDto>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
             var res = await movieRepository.GetAll(request.Filter, request.SortingPaging);
-            var models = res.Select(c => new MovieDto(c.Id, c.Name, c.Description, c.Genre.Name));
-            return models;
+            if (res?.TotalItemCount > 0 && res.Items != null)
+            {
+                var models = res.Items.Select(c => new MovieDto(c.Id, c.Name, c.Description, c.Genre.Name));
+                return models;
+            }
+            return [];
         }
     }
 }

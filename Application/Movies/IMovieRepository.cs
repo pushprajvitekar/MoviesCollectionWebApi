@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Application.Common;
 using Domain.Movies;
 using Domain.Movies.Queries;
 
@@ -10,7 +10,7 @@ namespace Application.Movies
 
         Task<Movie> Update(Movie movie);
         Task<Movie?> GetById(int id);
-        Task<IList<Movie>> GetAll(MovieFilter? filter = null, SortingPaging? sortingPaging = null);
+        Task<Page<Movie>> GetAll(MovieFilter? filter = null, SortingPaging? sortingPaging = null);
 
     }
 }

@@ -2,7 +2,7 @@
 using Application.Movies.Commands.UpdateMovie;
 using Application.Movies.Dtos;
 using Application.Movies.Queries.GetMovies;
-using Domain.Common;
+using Application.Common;
 using Domain.Movies.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

@@ -1,6 +1,5 @@
 ﻿using Application.Movies.Dtos;
-using Domain.Common;
-using Domain.Movies.Queries;
+using Application.Common;
 using Domain.Users.Queries;
 using MediatR;
 

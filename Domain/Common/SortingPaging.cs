@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Common
+﻿namespace Domain.Common
 {
-    public class SortingPaging
-    {
-    }
+    public record SortingPaging(string? SortBy, bool SortAsc, int PageNumber, int PageSize);
 }

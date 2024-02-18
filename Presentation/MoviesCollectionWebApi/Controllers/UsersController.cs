@@ -20,10 +20,12 @@ namespace MoviesCollectionWebApi.Controllers
     {
 
         private readonly IMediator mediator;
+        private readonly IAuthorizationService authorizationService;
 
-        public UsersController(IMediator mediator)
+        public UsersController(IMediator mediator, IAuthorizationService authorizationService)
         {
             this.mediator = mediator;
+            this.authorizationService = authorizationService;
         }
 
 
@@ -100,11 +102,11 @@ namespace MoviesCollectionWebApi.Controllers
 
         #endregion
 
-       
+
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult>  GetUserMovies([FromQuery] UserMovieFilter? filter, [FromQuery] SortingPaging? sortingPaging)
+        public async Task<IActionResult> GetUserMovies([FromQuery] UserMovieFilter? filter, [FromQuery] SortingPaging? sortingPaging)
         {
             var res = await mediator.Send(new GetUserMoviesQuery(filter, sortingPaging));
             return Ok(res);
@@ -112,7 +114,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         // POST api/<UsersController>
         [HttpPost("{id}")]
-        public async Task<IActionResult> AddMovie([FromBody] AddMovieDto addMovieDto)
+        public async Task<IActionResult> AddMovie(int id, [FromBody] AddMovieDto addMovieDto)
         {
             if (addMovieDto == null)
             {
@@ -122,8 +124,17 @@ namespace MoviesCollectionWebApi.Controllers
             {
                 return BadRequest();
             }
-            var res = await mediator.Send(new AddUserMovieQuery(addMovieDto));
-            return CreatedAtAction(nameof(AddMovie), new { res });
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, id, UserAuthorizationRequirement.SameUser);
+
+            if (authorizationResult.Succeeded)
+            {
+                var res = await mediator.Send(new AddUserMovieQuery(addMovieDto));
+                return CreatedAtAction(nameof(AddMovie), new { res });
+            }
+            else
+            {
+                return User.Identity?.IsAuthenticated == true ? new ForbidResult() : new ChallengeResult();
+            }
         }
 
         //// PUT api/<UsersController>/5
@@ -141,14 +152,23 @@ namespace MoviesCollectionWebApi.Controllers
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveMovie([FromBody] RemoveMovieDto removeMovieDto)
+        public async Task<IActionResult> RemoveMovie(int id, [FromBody] RemoveMovieDto removeMovieDto)
         {
             if (removeMovieDto == null)
             {
                 return BadRequest();
             }
-            var res = await mediator.Send(new RemoveUserMovieQuery(removeMovieDto));
-            return Ok(new { res });
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, id, UserAuthorizationRequirement.SameUser);
+
+            if (authorizationResult.Succeeded)
+            {
+                var res = await mediator.Send(new RemoveUserMovieQuery(removeMovieDto));
+                return Ok(new { res });
+            }
+            else
+            {
+                return User.Identity?.IsAuthenticated == true ? new ForbidResult() : new ChallengeResult();
+            }
         }
     }
 }

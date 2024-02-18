@@ -1,12 +1,18 @@
 using Domain.Users;
 using EFCorePersistence;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MovieCollectionWebApi.Auth.Jwt;
+using MovieCollectionWebApi.Filters;
 using MoviesCollectionWebApi.Extensions;
 using NLog.Extensions.Logging;
 using System.Text.Json.Serialization;
+using Application.Movies.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using MovieCollectionWebApi.Auth;
 
 namespace MoviesCollectionWebApi
 {
@@ -21,15 +27,18 @@ namespace MoviesCollectionWebApi
                 loggingBuilder.ClearProviders();
                 loggingBuilder.AddNLog();
             });
-
+            builder.Services.AddAuthorization(options =>
+                 options.AddPolicy(PolicyName.SameUserPolicy, policy => policy.Requirements.Add(new SameUserAuthorizationRequirement())));
+            builder.Services.AddSingleton<IAuthorizationHandler, SameUserAuthorizationHandler>();
             builder.Services.AddScoped<TokenService, TokenService>();
             // Support string to enum conversions
-            builder.Services.AddControllers()
+            builder.Services.AddControllers(o => o.Filters.Add(typeof(ExceptionFilter)))
                 .AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
-
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateMovieDto>();
             // Specify identity requirements
             // Must be added before .AddAuthentication otherwise a 404 is thrown on authorized endpoints
             builder.Services

@@ -1,4 +1,5 @@
-﻿using EFCorePersistence;
+﻿using Application.Movies;
+using EFCorePersistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +42,11 @@ namespace MoviesCollectionWebApi.Extensions
                     };
                 });
 
+        }
+
+        public static void AddRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IMovieRepository, MovieCollectionDBContext>();
         }
     }
 }

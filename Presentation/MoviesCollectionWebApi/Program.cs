@@ -1,6 +1,7 @@
 using Domain.Users;
 using EFCorePersistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MovieCollectionWebApi.Auth.Jwt;
 using MoviesCollectionWebApi.Extensions;
@@ -42,8 +43,8 @@ namespace MoviesCollectionWebApi
                     options.Password.RequireUppercase = false;
                 })
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<MovieCollectionDBContext>();
-
+                .AddEntityFrameworkStores<MovieCollectionDBContext>()
+                ;
             builder.Services.AddAuthenticationJwtBearer(builder.Configuration);
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -77,7 +78,7 @@ namespace MoviesCollectionWebApi
 
 
             builder.Services.RegisterDBContext(builder.Configuration);
-
+            builder.Services.AddRepositories();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

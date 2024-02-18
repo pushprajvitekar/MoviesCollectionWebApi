@@ -1,5 +1,4 @@
-﻿using Application.Movies;
-using Application.Movies.Dtos;
+﻿using Application.Movies.Dtos;
 using MediatR;
 
 namespace Application.Movies.Queries.GetMovies
@@ -13,12 +12,11 @@ namespace Application.Movies.Queries.GetMovies
             this.movieRepository = movieRepository;
         }
 
-        public Task<IEnumerable<MovieDto>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MovieDto>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
-            var res = movieRepository.GetAll(request.Filter, request.SortingPaging)
-                                   .Select(c => new MovieDto(c.Id, c.Name, c.Description, c.Genre.Name));
-
-            return Task.FromResult(res);
+            var res = await movieRepository.GetAll(request.Filter, request.SortingPaging);
+            var models = res.Select(c => new MovieDto(c.Id, c.Name, c.Description, c.Genre.Name));
+            return models;
         }
     }
 }

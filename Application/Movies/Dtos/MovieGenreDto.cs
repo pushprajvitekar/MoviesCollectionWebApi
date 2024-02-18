@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Movies.Dtos
 {
-    internal class MovieGenreDto
+    public class MovieGenreDto()
     {
     }
 }

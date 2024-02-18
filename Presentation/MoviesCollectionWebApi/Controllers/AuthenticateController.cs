@@ -17,12 +17,12 @@ namespace MoviesCollectionWebApi.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly TokenService tokenService;
 
         public AuthenticateController(
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             TokenService tokenService
             )
@@ -62,7 +62,7 @@ namespace MoviesCollectionWebApi.Controllers
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new GenericResponse { Status = "Error", Message = "User already exists!" });
 
-            IdentityUser user = new()
+            ApplicationUser user = new()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -71,6 +71,8 @@ namespace MoviesCollectionWebApi.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new GenericResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            if (!await _roleManager.RoleExistsAsync(UserRoleEnum.User.ToString()))
+                await _roleManager.CreateAsync(new IdentityRole(UserRoleEnum.User.ToString()) {NormalizedName=UserRoleEnum.User.ToString().ToUpper() });
             await _userManager.AddToRoleAsync(user, UserRoleEnum.User.ToString());
             return CreatedAtAction(nameof(Register), new { email = model.Email, role = UserRoleEnum.User.ToString() }, new RegisterUserDto(model.Email,model.Username,string.Empty));
         }
@@ -83,7 +85,7 @@ namespace MoviesCollectionWebApi.Controllers
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new GenericResponse { Status = "Error", Message = "User already exists!" });
 
-            IdentityUser user = new()
+            ApplicationUser user = new()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -93,21 +95,23 @@ namespace MoviesCollectionWebApi.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new GenericResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            if (!await _roleManager.RoleExistsAsync(UserRoleEnum.Admin.ToString()))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoleEnum.Admin.ToString()));
-            if (!await _roleManager.RoleExistsAsync(UserRoleEnum.User.ToString()))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoleEnum.User.ToString()));
+            await AddRoles();
 
             if (await _roleManager.RoleExistsAsync(UserRoleEnum.Admin.ToString()))
             {
                 await _userManager.AddToRoleAsync(user, UserRoleEnum.Admin.ToString());
             }
-            //if (await _roleManager.RoleExistsAsync(UserRoleEnum.User.ToString()))
-            //{
-            //    await _userManager.AddToRoleAsync(user, UserRoleEnum.User.ToString());
-            //}
             return Ok(new GenericResponse { Status = "Success", Message = "User created successfully!" });
         }
 
+        private async Task AddRoles()
+        {
+            var roles= Enum.GetNames(typeof(UserRoleEnum));
+            foreach (var role in roles)
+            {
+                if (!await _roleManager.RoleExistsAsync(role))
+                    await _roleManager.CreateAsync(new IdentityRole(role) { NormalizedName = role.ToUpper() });
+            }
+        }
     }
 }

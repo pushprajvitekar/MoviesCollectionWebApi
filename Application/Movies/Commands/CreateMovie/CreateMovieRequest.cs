@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Movies.Commands.CreateMovie
 {
-    public class CreateMovieRequest : IRequest<MovieDto>
+    public class CreateMovieRequest : IRequest<MovieDto?>
     {
         public CreateMovieRequest(CreateMovieDto createMovieDto)
         {

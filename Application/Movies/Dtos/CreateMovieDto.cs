@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Movies;
 
 namespace Application.Movies.Dtos
 {
-    public class CreateMovieDto
-    {
-    }
+    public record CreateMovieDto(string Name, string? Description, MovieGenreEnum movieGenre);
 }

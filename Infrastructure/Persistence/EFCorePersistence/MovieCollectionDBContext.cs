@@ -1,17 +1,16 @@
 ﻿using Domain.Movies;
 using Domain.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace EFCorePersistence
 {
-    public class MovieCollectionDBContext : IdentityUserContext<ApplicationUser>
+    public partial class MovieCollectionDBContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Movie> Movies { get; set; }
         public DbSet<MovieGenre> MovieGenres { get; set; }
         public DbSet<UserMovie> UserMovies { get; set; }
-        public DbSet<UserMovieReview> UserMovieReviews { get; set; }
         public MovieCollectionDBContext(DbContextOptions<MovieCollectionDBContext> options) : base(options)
         {
 

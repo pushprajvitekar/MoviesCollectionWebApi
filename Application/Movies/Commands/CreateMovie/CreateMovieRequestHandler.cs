@@ -20,7 +20,7 @@ namespace Application.Movies.Commands.CreateMovie
             var createMovieDto = request.CreateMovieDto;
             //check name 
             var mv = await movieRepository.GetAll(new MovieFilter { Name = createMovieDto.Name });
-            if (mv.Items.Any(c => c.Name.Equals(createMovieDto.Name, StringComparison.CurrentCultureIgnoreCase)))
+            if (mv?.Items.Any(c => c.Name.Equals(createMovieDto.Name, StringComparison.CurrentCultureIgnoreCase)) == true)
             {
                 throw new DomainException($"Movie already exists with Name {createMovieDto.Name} ", null, DomainErrorCode.Exists);
             }

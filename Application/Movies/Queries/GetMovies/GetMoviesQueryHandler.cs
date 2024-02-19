@@ -14,6 +14,7 @@ namespace Application.Movies.Queries.GetMovies
 
         public async Task<IEnumerable<MovieDto>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
+
             var res = await movieRepository.GetAll(request.Filter, request.SortingPaging);
             if (res?.TotalItemCount > 0 && res.Items != null)
             {

@@ -45,6 +45,11 @@ namespace EFCorePersistence
             return res;
         }
 
+        public async Task<IList<MovieGenre>> GetAllGenres()
+        {
+            return await MovieGenres.ToListAsync();
+        }
+
         public async Task<Movie?> GetById(int id)
         {
             var res = await Movies.Include(m => m.MovieGenre).FirstOrDefaultAsync(a => a.Id == id);

@@ -15,9 +15,21 @@ namespace Domain.Movies
         public string Name { get; protected set; }
 
         public string? Description { get; protected set; }
-        public MovieGenre MovieGenre { get; protected set; } 
+        public MovieGenre MovieGenre { get; protected set; }
         public int MovieGenreId { get; protected set; }
-        public ICollection<UserMovie> Users { get; set; }=new HashSet<UserMovie>();
+        public ICollection<UserMovie> Users { get; set; } = new HashSet<UserMovie>();
 
+        public void UpdateGenre(MovieGenre genre)
+        {
+            MovieGenre = genre;
+        }
+        public void UpdateMovieName(string name)
+        {
+            Name = name;
+        }
+        public void UpdateMovieDescription(string desc)
+        {
+            Description = desc;
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace Application.Movies
         Task<Movie> Update(Movie movie);
         Task<Movie?> GetById(int id);
         Task<Page<Movie>> GetAll(MovieFilter? filter = null, SortingPaging? sortingPaging = null);
+        Task<IList<MovieGenre>> GetAllGenres();
 
     }
 }

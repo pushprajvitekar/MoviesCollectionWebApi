@@ -1,4 +1,5 @@
 ﻿using FluentMigrator;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DatabaseMigrations.Migrations
 {
@@ -7,14 +8,14 @@ namespace DatabaseMigrations.Migrations
     {
         public override void Up()
         {
-           
+
             Create.Table(EntityNames.TableName.MovieGenre)
                 .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey()
                 .WithColumn(EntityNames.ColumnName.Name).AsString(50).NotNullable()
             ;
 
 
-            var genreFk= EntityNames.foreignkeyname(EntityNames.TableName.MovieGenre,EntityNames.ColumnName.Id);
+            var genreFk = EntityNames.foreignkeyname(EntityNames.TableName.MovieGenre, EntityNames.ColumnName.Id);
 
             Create.Table(EntityNames.TableName.Movie)
                 .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey().Identity()
@@ -69,14 +70,16 @@ namespace DatabaseMigrations.Migrations
 
         private void SeedLookupData()
         {
-           
+
             Insert.IntoTable(EntityNames.TableName.MovieGenre)
-                .Row(new { Id=1, Name="Action"})
+                .Row(new { Id = 1, Name = "Action" })
                 .Row(new { Id = 2, Name = "Romance" })
                 .Row(new { Id = 3, Name = "War" })
                 .Row(new { Id = 4, Name = "Drama" })
                 .Row(new { Id = 5, Name = "Thriller" })
                 .Row(new { Id = 6, Name = "Comedy" })
+                .Row(new { Id = 7, Name = "Horror" })
+                .Row(new { Id = 8, Name = "Children" })
                 ;
 
         }

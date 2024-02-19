@@ -34,9 +34,9 @@ namespace EFCorePersistence
                 {
                     pred = pred.And(a => a.Movie.Name.Contains(filter.MovieName));
                 }
-                if (filter.GenreId != null)
+                if (filter.Genre != null)
                 {
-                    var genreId = filter.GenreId.GetValueOrDefault();
+                    var genreId = (int)filter.Genre.GetValueOrDefault();
                     pred = pred.And(a => a.Movie.MovieGenreId == genreId);
                 }
             }

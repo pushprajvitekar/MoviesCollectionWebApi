@@ -32,9 +32,16 @@ namespace MoviesCollectionWebApi.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet()]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] int? pageNumber, int? pageSize)
         {
-            var res = await mediator.Send(new GetUsersQuery());
+            SortingPaging? sortingPaging = null;
+            if (pageNumber.HasValue || pageSize.HasValue)
+            {
+                int pageNum = pageNumber ?? 1;
+                int pageSze = pageSize ?? 10;
+                sortingPaging =   new SortingPaging("UserName", true, pageNum, pageSze);
+            }
+            var res = await mediator.Send(new GetUsersQuery(sortingPaging));
             return Ok(res);
         }
 
@@ -103,7 +110,7 @@ namespace MoviesCollectionWebApi.Controllers
             {
                 var userId = User.GetUserId();
                 var res = await mediator.Send(new RemoveUserMovieQuery(userId, removeMovieDto));
-                return Ok( res );
+                return Ok(res);
             }
             else
             {

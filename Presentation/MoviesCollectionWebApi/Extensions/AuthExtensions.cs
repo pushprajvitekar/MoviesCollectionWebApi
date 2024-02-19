@@ -1,26 +1,27 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace MovieCollectionWebApi.Extensions
 {
     public static class AuthExtensions
     {
-        public static int GetUserId(this ClaimsPrincipal claimsPrincipal)
+        public static string GetUserId(this ClaimsPrincipal claimsPrincipal)
         {
-            var id = -1;
+            return claimsPrincipal.GetClaimValue(ClaimTypes.NameIdentifier);
+        }
+        public static string GetUserName(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.GetClaimValue(ClaimTypes.Name);
+        }
+        private static string GetClaimValue(this ClaimsPrincipal claimsPrincipal, string claimType)
+        {
+            var retValue = string.Empty;
             var claim = claimsPrincipal;
             if (claim != null)
             {
-                var claimid = Convert.ToInt32(claim.FindFirstValue(ClaimTypes.NameIdentifier));
-                id = claimid > 0 ? claimid : id;
+                var claimValue = Convert.ToString(claim.FindFirstValue(claimType));
+                retValue = !string.IsNullOrEmpty(claimValue) ? claimValue : retValue;
             }
-            return id;
+            return retValue;
         }
-
-        //public static Task<IActionResult> Authorize(this IAuthorizationService authorizationService,ClaimsPrincipal principal, IAuthorizationRequirement requirement, object? resource, )
-        //{
-            
-        //}
     }
 }

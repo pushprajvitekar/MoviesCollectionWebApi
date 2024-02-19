@@ -4,13 +4,15 @@ using MediatR;
 
 namespace Application.Users.Commands.AddMovie
 {
-    public class AddUserMovieQuery : IRequest<MovieDto>
+    public class AddUserMovieQuery : IRequest<UserMovieDto>
     {
-        public AddUserMovieQuery(AddMovieDto addMovieDto)
+        public AddUserMovieQuery(string userId, AddMovieDto addMovieDto)
         {
+            UserId = userId;
             AddMovieDto = addMovieDto;
         }
 
+        public string UserId { get; }
         public AddMovieDto AddMovieDto { get; }
     }
 }

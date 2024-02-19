@@ -4,11 +4,18 @@ namespace Domain.Users
 {
     public class UserMovie
     {
-        public int Id { get; set; }
+        public int Id { get; protected set; }
 
-        public virtual ApplicationUser User { get; set; }
-        public virtual Movie Movie { get; set; }
-        public virtual UserMovieReview UserMovieReview { get; set; }
+        public ApplicationUser User { get; protected set; }
+        public string AspNetUsersId { get; protected set; }
+        public Movie Movie { get; protected set; }
+        public int MovieId { get; protected set; }
+        public UserMovieReview UserMovieReview { get; protected set; }
 
+        public void AssociateUserMovie(ApplicationUser user, Movie movie)
+        { 
+            User = user;
+            Movie = movie;
+        }
     }
 }

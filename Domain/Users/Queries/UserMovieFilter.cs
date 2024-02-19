@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Users.Queries
+﻿namespace Domain.Users.Queries
 {
     public class UserMovieFilter
     {
+        public string? MovieName { get; set; }
+        public int? GenreId { get; set; }
     }
 }

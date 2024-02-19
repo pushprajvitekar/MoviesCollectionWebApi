@@ -7,7 +7,7 @@ namespace EFCorePersistence
     public static class LinqExtensions
     {
         #region Pagination
-        public static async Task<Page<T>> ToPagedAsync<T>(this IQueryable<T> src, int skip, int take, string orderBy, bool sortAsc) where T : class
+        public static async Task<Page<T>> ToPagedAsync<T>(this IQueryable<T> src, int pageNumber, int pageSize, string orderBy, bool sortAsc) where T : class
         {
             var sortBy = sortAsc ? $"{orderBy} asc" : $"{orderBy} desc";
 
@@ -18,11 +18,11 @@ namespace EFCorePersistence
                 queryExpression = queryExpression.Reduce();
 
             src = src.Provider.CreateQuery<T>(queryExpression);
-
+            var skip = pageNumber <= 1 ? 0 : pageNumber * pageSize;
             var results = new Page<T>
             {
                 TotalItemCount = await src.CountAsync(),
-                Items = await src.Skip(skip).Take(take).ToListAsync()
+                Items = await src.Skip(skip).Take(pageSize).ToListAsync()
             };
 
             return results;

@@ -8,6 +8,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieCollectionWebApi.Auth;
+using Application.Users.Queries.GetUsers;
+using MovieCollectionWebApi.Extensions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,7 +17,7 @@ namespace MoviesCollectionWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = $"{Roles.Admin},{Roles.User}")]
+    //[Authorize(Roles = $"{Roles.Admin},{Roles.User}")]
     public class UsersController : ControllerBase
     {
 
@@ -28,22 +30,29 @@ namespace MoviesCollectionWebApi.Controllers
             this.authorizationService = authorizationService;
         }
 
+        // GET api/<UsersController>/5
+        [HttpGet()]
+        public async Task<IActionResult> GetUsers()
+        {
+            var res = await mediator.Send(new GetUsersQuery());
+            return Ok(res);
+        }
 
-       
 
 
 
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserMovies([FromQuery] UserMovieFilter? filter, [FromQuery] SortingPaging? sortingPaging)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserMovies(string username, [FromQuery] UserMovieFilter? filter, [FromQuery] SortingPaging? sortingPaging)
         {
-            var res = await mediator.Send(new GetUserMoviesQuery(filter, sortingPaging));
+
+            var res = await mediator.Send(new GetUserMoviesQuery(username, filter, sortingPaging));
             return Ok(res);
         }
 
         // POST api/<UsersController>
-        [HttpPost("{id}")]
-        public async Task<IActionResult> AddMovie(int id, [FromBody] AddMovieDto addMovieDto)
+        [HttpPost("{username}")]
+        public async Task<IActionResult> AddMovie(string username, [FromBody] AddMovieDto addMovieDto)
         {
             if (addMovieDto == null)
             {
@@ -53,12 +62,13 @@ namespace MoviesCollectionWebApi.Controllers
             {
                 return BadRequest();
             }
-            var authorizationResult = await authorizationService.AuthorizeAsync(User, id, UserAuthorizationRequirement.SameUser);
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, username, UserAuthorizationRequirement.SameUser);
 
             if (authorizationResult.Succeeded)
             {
-                var res = await mediator.Send(new AddUserMovieQuery(addMovieDto));
-                return CreatedAtAction(nameof(AddMovie), new { res });
+                var userId = User.GetUserId();
+                var res = await mediator.Send(new AddUserMovieQuery(userId, addMovieDto));
+                return CreatedAtAction(nameof(AddMovie), res);
             }
             else
             {
@@ -80,19 +90,20 @@ namespace MoviesCollectionWebApi.Controllers
         //}
 
         // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveMovie(int id, [FromBody] RemoveMovieDto removeMovieDto)
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> RemoveMovie(int username, [FromBody] RemoveMovieDto removeMovieDto)
         {
             if (removeMovieDto == null)
             {
                 return BadRequest();
             }
-            var authorizationResult = await authorizationService.AuthorizeAsync(User, id, UserAuthorizationRequirement.SameUser);
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, username, UserAuthorizationRequirement.SameUser);
 
             if (authorizationResult.Succeeded)
             {
-                var res = await mediator.Send(new RemoveUserMovieQuery(removeMovieDto));
-                return Ok(new { res });
+                var userId = User.GetUserId();
+                var res = await mediator.Send(new RemoveUserMovieQuery(userId, removeMovieDto));
+                return Ok( res );
             }
             else
             {

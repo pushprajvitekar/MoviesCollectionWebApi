@@ -1,6 +1,6 @@
 ﻿namespace Application.Users.Dtos
 {
-    public record RegisterUserDto(string Email,  string Username,  string Password)
+    public record RegisterUserDto(string Username, string Password, string Email)
     {
     }
 }

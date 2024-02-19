@@ -9,7 +9,7 @@ namespace Domain.Users
         public float Rating { get; protected set; }
 
         public int UserMovieId { get; set; }
-        public virtual UserMovie UserMovie { get; protected set; }
+        public UserMovie UserMovie { get; protected set; }
 
     }
 }

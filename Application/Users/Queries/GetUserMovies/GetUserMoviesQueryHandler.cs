@@ -1,9 +1,9 @@
-﻿using Application.Movies.Dtos;
+﻿using Application.Users.Dtos;
 using MediatR;
 
 namespace Application.Users.Queries.GetUserMovies
 {
-    public class GetUserMoviesQueryHandler : IRequestHandler<GetUserMoviesQuery, IEnumerable<MovieDto>>
+    public class GetUserMoviesQueryHandler : IRequestHandler<GetUserMoviesQuery, IEnumerable<UserMovieDto>>
     {
         private readonly IUserMovieRepository movieRepository;
 
@@ -12,12 +12,16 @@ namespace Application.Users.Queries.GetUserMovies
             this.movieRepository = movieRepository;
         }
 
-        public Task<IEnumerable<MovieDto>> Handle(GetUserMoviesQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UserMovieDto>> Handle(GetUserMoviesQuery request, CancellationToken cancellationToken)
         {
-            var res = movieRepository.GetAll  (1, request.Filter, request.SortingPaging)
-                                   .Select(c => new MovieDto(c.Id, c.Movie.Name, c.Movie.Description, c.Movie.Genre.Name));
+            var res = await movieRepository.GetAll(request.UserName, request.Filter, request.SortingPaging);
 
-            return Task.FromResult(res);
+            if (res?.TotalItemCount > 0 && res.Items != null)
+            {
+                var models = res.Items.Select(c => new UserMovieDto(c.Id, c.Movie.Id, c.Movie.Name, c.Movie.Description, c.Movie.MovieGenre.Name));
+                return models;
+            }
+            return [];
         }
     }
 }

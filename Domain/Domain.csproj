@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="Common\SortingPaging.cs" />
+    <Compile Remove="Users\ApplicationRole.cs" />
     <Compile Remove="Users\User.cs" />
     <Compile Remove="Users\UserRole.cs" />
   </ItemGroup>

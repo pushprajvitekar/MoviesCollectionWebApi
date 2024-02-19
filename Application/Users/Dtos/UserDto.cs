@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace Application.Users.Dtos
 {
     public class UserDto
     {
+        public string UserName { get; set; }
+        // public Role MyProperty { get; set; }
     }
 }

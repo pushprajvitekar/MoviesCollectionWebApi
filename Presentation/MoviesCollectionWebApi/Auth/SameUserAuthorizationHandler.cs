@@ -7,13 +7,13 @@ namespace MovieCollectionWebApi.Auth
     {
         public const string SameUserPolicy = "SameUserPolicy";
     }
-    public class SameUserAuthorizationHandler : AuthorizationHandler<SameUserAuthorizationRequirement, int>
+    public class SameUserAuthorizationHandler : AuthorizationHandler<SameUserAuthorizationRequirement, string>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
                                                        SameUserAuthorizationRequirement requirement,
-                                                       int resource)
+                                                       string resource)
         {
-            if (context.User.IsInRole(Roles.Admin) || context.User.GetUserId() == resource)
+            if (context.User.IsInRole(Roles.Admin) || context.User.GetUserName() == resource)
             {
                 context.Succeed(requirement);
             }

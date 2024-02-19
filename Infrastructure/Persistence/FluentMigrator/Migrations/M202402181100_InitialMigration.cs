@@ -13,15 +13,11 @@ namespace DatabaseMigrations.Migrations
                 .WithColumn(EntityNames.ColumnName.Name).AsString(50).NotNullable()
             ;
 
-            //Create.Table(EntityNames.TableName.UserRole)
-            //    .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey()
-            //    .WithColumn(EntityNames.ColumnName.Name).AsString(50).NotNullable()
-            //;
 
             var genreFk= EntityNames.foreignkeyname(EntityNames.TableName.MovieGenre,EntityNames.ColumnName.Id);
 
             Create.Table(EntityNames.TableName.Movie)
-                .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey()
+                .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey().Identity()
                 .WithColumn(EntityNames.ColumnName.Name).AsString(400).NotNullable()
                 .WithColumn(EntityNames.ColumnName.Description).AsString(2000).Nullable()
                 .WithColumn(genreFk).AsInt32().NotNullable()
@@ -37,7 +33,7 @@ namespace DatabaseMigrations.Migrations
             var userFk = EntityNames.foreignkeyname(EntityNames.TableName.User, EntityNames.ColumnName.Id);
 
             Create.Table(EntityNames.TableName.UserMovie)
-               .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey()
+               .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey().Identity()
                .WithColumn(movieFk).AsInt32().NotNullable()
                .WithColumn(userFk).AsString().NotNullable()
            ;
@@ -55,7 +51,7 @@ namespace DatabaseMigrations.Migrations
 
             var userMovieFk = EntityNames.foreignkeyname(EntityNames.TableName.UserMovie, EntityNames.ColumnName.Id);
             Create.Table(EntityNames.TableName.UserMovieReview)
-               .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey()
+               .WithColumn(EntityNames.ColumnName.Id).AsInt32().PrimaryKey().Identity()
                .WithColumn(EntityNames.ColumnName.Review).AsString(2000).NotNullable()
                .WithColumn(EntityNames.ColumnName.Rating).AsFloat().NotNullable()
                .WithColumn(userMovieFk).AsInt32().NotNullable()
@@ -83,11 +79,6 @@ namespace DatabaseMigrations.Migrations
                 .Row(new { Id = 6, Name = "Comedy" })
                 ;
 
-            //Insert.IntoTable(EntityNames.TableName.UserRole)
-            //  .Row(new { Id = 1, Name = "Admin" })
-            //  .Row(new { Id = 2, Name = "Manager" })
-            //  .Row(new { Id = 3, Name = "User" })
-            //  ;
         }
     }
 }

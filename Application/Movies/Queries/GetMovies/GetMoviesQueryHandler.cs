@@ -17,7 +17,7 @@ namespace Application.Movies.Queries.GetMovies
             var res = await movieRepository.GetAll(request.Filter, request.SortingPaging);
             if (res?.TotalItemCount > 0 && res.Items != null)
             {
-                var models = res.Items.Select(c => new MovieDto(c.Id, c.Name, c.Description, c.Genre.Name));
+                var models = res.Items.Select(c => new MovieDto(c.Id, c.Name, c.Description, c.MovieGenre.Name));
                 return models;
             }
             return [];

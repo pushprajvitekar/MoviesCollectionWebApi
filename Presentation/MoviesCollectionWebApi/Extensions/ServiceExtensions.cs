@@ -1,4 +1,6 @@
 ﻿using Application.Movies;
+using Application.Movies.Dtos;
+using Application.Users;
 using EFCorePersistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +49,16 @@ namespace MoviesCollectionWebApi.Extensions
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IMovieRepository, MovieCollectionDBContext>();
+            services.AddScoped<IUserMovieRepository, MovieCollectionDBContext>();
+        }
+
+        public static void AddMediator(this IServiceCollection services)
+        {
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(MovieDto).Assembly);
+
+            });
         }
     }
 }

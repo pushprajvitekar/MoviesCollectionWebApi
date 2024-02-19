@@ -6,10 +6,9 @@ namespace Application.Users
 {
     public interface IUserMovieRepository
     {
-        UserMovie Add(UserMovie userMovie);
-        UserMovie Delete(UserMovie userMovie);
-        UserMovie? GetById(string userId, int id);
-        IList<UserMovie> GetAll(int userId, UserMovieFilter? filter = null, SortingPaging? sortingPaging = null);
-        UserMovie? GetById(int id);
+        Task<UserMovie> Add(UserMovie userMovie);
+        Task<bool> Delete(UserMovie userMovie);
+        Task<UserMovie?> GetByUserName(string username, int movieId);
+        Task<Page<UserMovie>> GetAll(string username, UserMovieFilter? filter = null, SortingPaging? sortingPaging = null);
     }
 }

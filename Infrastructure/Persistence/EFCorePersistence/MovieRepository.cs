@@ -13,7 +13,8 @@ namespace EFCorePersistence
         {
             Movies.Add(movie);
             await SaveChangesAsync();
-            return movie;
+            var res = await Movies.Include(m => m.MovieGenre).FirstAsync(m => m.Id == movie.Id);
+            return res;
         }
 
         public async Task<Page<Movie>> GetAll(MovieFilter? filter = null, SortingPaging? sortingPaging = null)
@@ -29,12 +30,14 @@ namespace EFCorePersistence
                 if (filter.Genre != null)
                 {
                     var genreId = (int)filter.Genre.GetValueOrDefault();
-                    pred = pred.And(a => a.Genre.Id == genreId);
+                    pred = pred.And(a => a.MovieGenre.Id == genreId);
                 }
             }
-            var sortPage = sortingPaging ?? new SortingPaging("Id", false, 1, 10);
+            var sortPage = sortingPaging ?? new SortingPaging();
             var sortBy = sortPage.SortBy ?? "Id";
-            var res = await Movies.AsExpandable()
+            var res = await Movies
+                            .Include(m => m.MovieGenre)
+                            .AsExpandable()
                                   .Where(pred)
                                   .ToPagedAsync(sortPage.PageNumber, sortPage.PageSize, sortBy, sortPage.SortAsc);
 
@@ -44,13 +47,13 @@ namespace EFCorePersistence
 
         public async Task<Movie?> GetById(int id)
         {
-            var res = await Movies.FirstOrDefaultAsync(a => a.Id == id);
+            var res = await Movies.Include(m => m.MovieGenre).FirstOrDefaultAsync(a => a.Id == id);
             return res;
         }
 
         public async Task<Movie> Update(Movie movie)
         {
-            var res = await Movies.FirstOrDefaultAsync(a => a.Id == movie.Id);
+            var res = await Movies.Include(m => m.MovieGenre).FirstOrDefaultAsync(a => a.Id == movie.Id);
             res = movie;
             await SaveChangesAsync();
             return movie;

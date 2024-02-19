@@ -2,6 +2,7 @@
 using Azure;
 using Azure.Core;
 using Domain.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -36,7 +37,7 @@ namespace MoviesCollectionWebApi.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] AuthRequest model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(model.UserName);
             if (user?.Email != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -72,13 +73,14 @@ namespace MoviesCollectionWebApi.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new GenericResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
             if (!await _roleManager.RoleExistsAsync(UserRoleEnum.User.ToString()))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoleEnum.User.ToString()) {NormalizedName=UserRoleEnum.User.ToString().ToUpper() });
+                await _roleManager.CreateAsync(new IdentityRole(UserRoleEnum.User.ToString()) { NormalizedName = UserRoleEnum.User.ToString().ToUpper() });
             await _userManager.AddToRoleAsync(user, UserRoleEnum.User.ToString());
-            return CreatedAtAction(nameof(Register), new { email = model.Email, role = UserRoleEnum.User.ToString() }, new RegisterUserDto(model.Email,model.Username,string.Empty));
+            return CreatedAtAction(nameof(Register), new { email = model.Email, role = UserRoleEnum.User.ToString() }, new RegisterUserDto(model.Email, model.Username, string.Empty));
         }
 
         [HttpPost]
         [Route("register-admin")]
+       // [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterUserDto model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
@@ -106,7 +108,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         private async Task AddRoles()
         {
-            var roles= Enum.GetNames(typeof(UserRoleEnum));
+            var roles = Enum.GetNames(typeof(UserRoleEnum));
             foreach (var role in roles)
             {
                 if (!await _roleManager.RoleExistsAsync(role))

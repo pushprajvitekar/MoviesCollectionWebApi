@@ -1,4 +1,4 @@
 ﻿namespace Application.Common
 {
-    public record SortingPaging(string? SortBy, bool SortAsc, int PageNumber, int PageSize);
+    public record SortingPaging(string? SortBy = null, bool SortAsc = false, int PageNumber = 1, int PageSize = 10);
 }

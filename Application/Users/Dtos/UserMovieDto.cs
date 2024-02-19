@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Users.Dtos
+﻿namespace Application.Users.Dtos
 {
-    internal class UserMovieDto
-    {
-    }
+    public record UserMovieDto(int Id, int MovieId, string MovieName, string? Description, string Genre);
 }

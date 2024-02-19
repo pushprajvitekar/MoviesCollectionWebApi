@@ -26,7 +26,7 @@ namespace MoviesCollectionWebApi.Controllers
         }
         // GET: api/<MoviesController>
         [HttpGet]
-        [Authorize(Roles = $"{Roles.Manager},{Roles.Admin},{Roles.User}")]
+        //[Authorize(Roles = $"{Roles.Manager},{Roles.Admin},{Roles.User}")]
         public async Task<IActionResult> GetMovies([FromQuery] MovieFilter? filter, [FromQuery] SortingPaging? sortingPaging)
         {
             var res = await mediator.Send(new GetMoviesQuery(filter, sortingPaging));
@@ -36,7 +36,7 @@ namespace MoviesCollectionWebApi.Controllers
      
         // POST api/<MoviesController>
         [HttpPost]
-        [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
+       // [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
         public async Task<IActionResult> CreateMovie([FromBody] CreateMovieDto createMovieDto)
         {
             if (createMovieDto == null)
@@ -48,12 +48,12 @@ namespace MoviesCollectionWebApi.Controllers
                 return BadRequest();
             }
             var res = await mediator.Send(new CreateMovieRequest(createMovieDto));
-            return CreatedAtAction(nameof(CreateMovie), new {  res });
+            return CreatedAtAction(nameof(CreateMovie),   res );
         }
 
         // PUT api/<MoviesController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
+       // [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
         public async Task<IActionResult> UpdateMovie([FromBody] UpdateMovieDto updateMovieDto)
         {
             if (updateMovieDto == null)
@@ -61,7 +61,7 @@ namespace MoviesCollectionWebApi.Controllers
                 return BadRequest();
             }
             var res = await mediator.Send(new UpdateMovieRequest(updateMovieDto));
-            return AcceptedAtAction(nameof(UpdateMovie), new { res });
+            return AcceptedAtAction(nameof(UpdateMovie),  res );
         }
 
         //// DELETE api/<MoviesController>/5

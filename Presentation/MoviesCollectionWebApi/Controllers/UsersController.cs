@@ -83,18 +83,7 @@ namespace MoviesCollectionWebApi.Controllers
             }
         }
 
-        //// PUT api/<UsersController>/5
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateMovie([FromBody] string value)
-        //{
-
-        //    if (updateMovieDto == null)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var res = await mediator.Send(new UpdateMovieRequest(updateMovieDto));
-        //    return AcceptedAtAction(nameof(UpdateMovie), new { res });
-        //}
+      
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{username}")]

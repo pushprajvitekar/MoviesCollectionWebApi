@@ -1,4 +1,5 @@
 ﻿using DatabaseMigrations.SqlServer;
+using Microsoft.Extensions.Configuration;
 
 namespace DatabaseMigrations
 {
@@ -9,7 +10,13 @@ namespace DatabaseMigrations
             Console.WriteLine("Starting Migrator...");
             try
             {
-                Database.RunMigrations();
+                IConfiguration configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
+    .AddCommandLine(args)
+    .Build();
+                Database.RunMigrations(configuration);
             }
             catch (Exception e)
             {

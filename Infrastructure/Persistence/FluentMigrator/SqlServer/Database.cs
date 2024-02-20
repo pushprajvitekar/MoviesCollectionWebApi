@@ -1,28 +1,25 @@
-﻿using FluentMigrator.Runner.Initialization;
+﻿using Dapper;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Initialization;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
 
 namespace DatabaseMigrations.SqlServer
 {
     public static class Database
     {
-        private const string ConnectionString = "Server=.\\SQLEXPRESS2022;Database=MovieCollectionApi;Trusted_Connection=True;MultipleActiveResultSets=true; Encrypt=false";
-        public static void RunMigrations()
+        public static void RunMigrations(IConfiguration configuration)
         {
+            var connString= configuration["Data:DefaultConnection:ConnectionString"] ?? throw new ArgumentNullException(nameof(configuration), $"ConnectionString not defined");
 #if DEBUG
 
-            EnsureDatabase("Persist Security Info = False; Integrated Security = false; Initial Catalog = master;TrustServerCertificate=True;Trusted_Connection=true;server = .\\SQLEXPRESS2022", "MovieCollectionApi");
+            var dbName= configuration["Data:DefaultConnection:DatabaseName"] ?? throw new ArgumentNullException(nameof(configuration), $"DatabaseName not defined");
+            EnsureDatabase(connString, dbName);
 
 #endif
 
-            using var serviceProvider = CreateServices();
+            using var serviceProvider = CreateServices(connString);
             using var scope = serviceProvider.CreateScope();
             UpdateDatabase(scope.ServiceProvider);
         }
@@ -41,7 +38,7 @@ namespace DatabaseMigrations.SqlServer
         /// <summary>
         /// Configure the dependency injection services
         /// </summary>
-        private static ServiceProvider CreateServices()
+        private static ServiceProvider CreateServices(string connstring)
         {
             return new ServiceCollection()
                 // Add common FluentMigrator services
@@ -51,7 +48,7 @@ namespace DatabaseMigrations.SqlServer
                     // Add SqlServer support to FluentMigrator
                     .AddSqlServer()
                     // Set the connection string
-                    .WithGlobalConnectionString(ConnectionString)
+                    .WithGlobalConnectionString(connstring)
                     // Define the assembly containing the migrations
                     .ScanIn(typeof(Database).Assembly).For.Migrations())
                 // Enable logging to console in the FluentMigrator way

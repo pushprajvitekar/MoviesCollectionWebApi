@@ -23,11 +23,13 @@ namespace Application.Users.Commands.AddMovie
         {
 
             var movieId = request.AddMovieDto.MovieId;
-            var exists = userMovieRepository.GetByUserName(request.UserId, movieId);
-            if (exists != null) throw new DomainException("Movie already added", null, DomainErrorCode.Exists);
-            var movie = await movieRepository.GetById(movieId);
             var userId = request.UserId;
             var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
+            if (user?.UserName == null) throw new DomainException("User not found", null, DomainErrorCode.NotFound);
+            var exists = await userMovieRepository.GetByUserName(user.UserName, movieId);
+            if (exists != null) throw new DomainException("Movie already added", null, DomainErrorCode.Exists);
+            var movie = await movieRepository.GetById(movieId);
+            if (movie == null) throw new DomainException("Movie not found", null, DomainErrorCode.NotFound);
             var usermovie = new UserMovie();
             usermovie.AssociateUserMovie(user, movie);
             var res = await userMovieRepository.Add(usermovie);

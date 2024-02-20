@@ -73,7 +73,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         [HttpPost]
         [Route("register-admin")]
-       // [Authorize(Roles = Roles.Admin)]
+       // [Authorize(Roles = Roles.Admin)]//todo add configuration to enable /disable this api
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterUserDto model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);

@@ -87,7 +87,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{username}")]
-        public async Task<IActionResult> RemoveMovie(int username, [FromBody] RemoveMovieDto removeMovieDto)
+        public async Task<IActionResult> RemoveMovie(string username, [FromBody] RemoveMovieDto removeMovieDto)
         {
             if (removeMovieDto == null)
             {

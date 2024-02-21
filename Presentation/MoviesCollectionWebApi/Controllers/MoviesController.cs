@@ -26,7 +26,7 @@ namespace MoviesCollectionWebApi.Controllers
         }
         // GET: api/<MoviesController>
         [HttpGet]
-        //[Authorize(Roles = $"{Roles.Manager},{Roles.Admin},{Roles.User}")]
+        [Authorize(Roles = $"{Roles.Manager},{Roles.Admin},{Roles.User}")]
         public async Task<IActionResult> GetMovies([FromQuery] MovieFilter? filter, [FromQuery] SortingPaging? sortingPaging)
         {
             var res = await mediator.Send(new GetMoviesQuery(filter, sortingPaging));
@@ -36,7 +36,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         // POST api/<MoviesController>
         [HttpPost]
-        // [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
+         [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
         public async Task<IActionResult> CreateMovie([FromBody] CreateMovieDto createMovieDto)
         {
             if (createMovieDto == null)
@@ -53,7 +53,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         // PUT api/<MoviesController>/5
         [HttpPut("{id}")]
-        // [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
+        [Authorize(Roles = $"{Roles.Manager},{Roles.Admin}")]
         public async Task<IActionResult> UpdateMovie(int id, [FromBody] UpdateMovieDto updateMovieDto)
         {
             if (updateMovieDto == null)

@@ -64,7 +64,9 @@ namespace DatabaseMigrations.SqlServer
 
         public static void EnsureDatabase(string connectionString, string databaseName)
         {
-            using var connection = new SqlConnection(connectionString);
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+            builder.Remove("Database");
+            using var connection = new SqlConnection(builder.ConnectionString);
             var parameters = new DynamicParameters();
             parameters.Add("name", databaseName);
             if (!connection.Query("SELECT * FROM sys.databases WHERE name = @name", parameters).Any())

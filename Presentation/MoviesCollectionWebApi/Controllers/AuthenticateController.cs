@@ -1,5 +1,6 @@
 ﻿using Application.Users.Dtos;
 using Domain.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MovieCollectionWebApi.Auth;
@@ -73,7 +74,7 @@ namespace MoviesCollectionWebApi.Controllers
 
         [HttpPost]
         [Route("register-admin")]
-       // [Authorize(Roles = Roles.Admin)]//todo add configuration to enable /disable this api
+        [Authorize(Roles = Roles.Admin)]//todo add configuration to enable /disable this api
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterUserDto model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
